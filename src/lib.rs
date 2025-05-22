@@ -1,9 +1,11 @@
 use std::fmt::Display;
 
 use time::{
-    Date, OffsetDateTime, PrimitiveDateTime, Time, format_description::well_known::Rfc3339,
+    Date, OffsetDateTime, PrimitiveDateTime, Time,
+    format_description::well_known::{Iso8601, Rfc3339},
 };
 
+#[derive(Debug, PartialEq)]
 pub enum Temporal {
     Date(Date),
     Time(Time),
@@ -15,7 +17,7 @@ impl TryFrom<&str> for Temporal {
     type Error = HorologiumError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        match Date::parse(value, &Rfc3339) {
+        match Date::parse(value, &Iso8601::DATE) {
             Ok(x) => return Ok(Self::Date(x)),
             Err(_) => {}
         }
