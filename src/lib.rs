@@ -1,8 +1,7 @@
 use std::fmt::Display;
 
 use time::{
-    Date, OffsetDateTime, PrimitiveDateTime, Time,
-    format_description::well_known::{Iso8601, Rfc3339},
+    Date, OffsetDateTime, PrimitiveDateTime, Time, format_description::well_known::Iso8601,
     macros::format_description,
 };
 
