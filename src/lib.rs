@@ -5,7 +5,7 @@ use time::{
     macros::format_description,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Temporal {
     Date(Date),
     Time(Time),
