@@ -3,6 +3,7 @@ use std::fmt::Display;
 use time::{
     Date, OffsetDateTime, PrimitiveDateTime, Time,
     format_description::well_known::{Iso8601, Rfc3339},
+    macros::format_description,
 };
 
 #[derive(Debug, PartialEq)]
@@ -17,23 +18,24 @@ impl TryFrom<&str> for Temporal {
     type Error = HorologiumError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match OffsetDateTime::parse(value, &Iso8601::DATE_TIME_OFFSET) {
+            Ok(x) => return Ok(Self::OffsetDateTime(x)),
+            Err(_) => {}
+        }
+
+        let fmt = format_description!("[year]-[month]-[day] [hour]:[minute]:[second]");
+        match PrimitiveDateTime::parse(value, &fmt) {
+            Ok(x) => return Ok(Self::DateTime(x)),
+            Err(_) => {}
+        }
+
         match Date::parse(value, &Iso8601::DATE) {
             Ok(x) => return Ok(Self::Date(x)),
             Err(_) => {}
         }
 
-        match Time::parse(value, &Rfc3339) {
+        match Time::parse(value, &Iso8601::TIME) {
             Ok(x) => return Ok(Self::Time(x)),
-            Err(_) => {}
-        }
-
-        match PrimitiveDateTime::parse(value, &Rfc3339) {
-            Ok(x) => return Ok(Self::DateTime(x)),
-            Err(_) => {}
-        }
-
-        match OffsetDateTime::parse(value, &Rfc3339) {
-            Ok(x) => return Ok(Self::OffsetDateTime(x)),
             Err(_) => {}
         }
 
